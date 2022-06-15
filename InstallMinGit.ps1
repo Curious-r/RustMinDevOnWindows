@@ -43,7 +43,7 @@ function Add-Path-Crs {
             "",
             [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames)
         if ($Path.EndsWith(';')) {
-            $Path = $Path.remove($Path.length - 1, 1)
+            $Path = $Path.Remove($Path.length - 1, 1)
         }
 
         # 更新环境变量Path
@@ -85,7 +85,7 @@ function Remove-Path-Crs {
             # 检测 $EntryToRemove 在 $Path 中是否有匹配，如果 $EntryToRemove 在 $Path 中没有匹配，
             # 存在 $Path 中相应条目不以反斜杠结尾的可能性，尝试去掉 $EntryToRemove 末尾的反斜杠
             if (!($Path -Match $EntryToRemove)) {
-                $EntryToRemove = $EntryToRemove.Substring(0, $EntryToRemove.LastIndexOf('\') - 1)
+                $EntryToRemove = $EntryToRemove.SubString(0, $EntryToRemove.LastIndexOf('\') - 1)
             }
 
             # 检测 $EntryToRemove 在 $Path 中是否有匹配，若存在对应值，则执行删除操作，并退出函数
@@ -97,7 +97,7 @@ function Remove-Path-Crs {
 
             # 如果上述判断没有匹配，考虑到Path的结构形式，那么除了确实没有相应条目以外，还存在相应条
             # 目在Path第一条，以至于前边没有分号的可能性。接下来尝试使用不加分号的值进行匹配，流程与
-            # 上述类似
+            # 前述类似
             $EntryToRemove = $_.Trim()
             if (!$EntryToRemove.EndsWith('\')) {
                 $EntryToRemove += '\'
@@ -111,7 +111,7 @@ function Remove-Path-Crs {
                 Set-ItemProperty -Path $EnvironmentRegisterKey -Name Path -Value $Path
             }
 
-            # 如果仍然没有匹配，那么说明确实没有对应条目，函数运行完毕自动退出
+            # 如果仍然没有匹配，那么说明确实没有对应条目，流程运行完毕自动退出
         }
     }
 }
