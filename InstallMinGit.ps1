@@ -124,7 +124,7 @@ function Remove-Path-Crs {
 # 设置Git安装位置，以下两行为默认安装在用户安装目录，如需改动请一并修改
 $GitInstallationLocation = "$env:LOCALAPPDATA\Programs\Git"
 # 用户环境变量Path中Git的内容
-$GitPath = ($GitInstallationLocation -replace [regex]::escape($env:LOCALAPPDATA), "%LOCALAPPDATA%") `
+$GitPath = ($GitInstallationLocation -replace [Regex]::Escape($env:LOCALAPPDATA), "%LOCALAPPDATA%") `
     + "\cmd"
 
 # 安装Git
