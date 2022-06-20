@@ -20,6 +20,8 @@ function Get-Path-Crs {
 function Add-Path-Crs {
     [CmdletBinding()]
     param (
+        # 声明可以接受管道输入的参数 $InputObject ，PowerShell原生cmdlet中承接管道输入的参数都叫这个名字，因此，
+        # 在自定义函数中尽量也要继承这个写法，以增加代码的可读性
         [Parameter(Mandatory = $true, ParameterSetName = 'AddPath', ValueFromPipeline = $true, Position = 0)]
         [String[]]$InputObject,
         [Parameter(ParameterSetName = 'AddPath')]
