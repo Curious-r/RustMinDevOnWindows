@@ -162,8 +162,9 @@ function Uninstall-Git-Crs {
 switch ($args) {
     "install" { 
         Install-Git-Crs
-        # 添加到用户环境变量
-        $GitPath | Add-Path-Crs
+        # 添加到用户环境变量,支持管道写法，取消注释下方语句：
+        #$GitPath | Add-Path-Crs
+        Add-Path-Crs $GitPath
         # 启用Windows的长路径支持
         Write-Host "Enbaling long path supoort in Windows..."
         New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
@@ -179,8 +180,9 @@ switch ($args) {
     }
     "uninstall" { 
         Uninstall-Git-Crs
-        # 删除注册的环境变量
-        $GitPath | Remove-Path-Crs
+        # 删除注册的环境变量,支持管道写法，取消注释下方语句：
+        #$GitPath | Remove-Path-Crs
+        Remove-Path-Crs $GitPath
         Write-Host "Uninstall complete."
         Return 
     }
