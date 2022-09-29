@@ -1,25 +1,60 @@
-﻿# How to Install
-# First Visual Studio needs to be installed, but not as much as usual. Using powershell:
+﻿# Author: Curious
+# 作者：Curious
 
-Invoke-WebRequest https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe
-$VSInstallerProcess = Start-Process -FilePath .\vs_buildtools -ArgumentList "--installPath", "$env:ProgramFiles\Microsoft Visual Studio", "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.Component.VC.Runtime.UCRTSDK", "--passive", "--wait" -Wait -PassThru
-Write-Host "Return Code: $VSInstallerProcess"
-if ($VSInstallerProcess -eq 0) {
-    Write-Host "VS build tools installation completed."
+
+. $PSScriptRoot\EnvPathManager.ps1
+# 在最小限度内安装Visual Studio构建工具
+$VSVersion = 17
+Write-Host "Downloading vs_buildtools and rustup-init..."
+Invoke-WebRequest https://aka.ms/vs/$VSVersion/release/vs_buildtools.exe -OutFile $PSScriptRoot\vs_buildtools.exe 
+Invoke-WebRequest https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe -OutFile $PSScriptRoot\rustup-init.exe
+Write-Host "Complete."
+
+switch ($args) {
+    "install" {
+        Write-Host "VS Build Tools installing..."
+        $VSInstall = Start-Process -FilePath $PSScriptRoot\vs_buildtools.exe -ArgumentList `
+            "--add", `
+            "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", `
+            "--add", `
+            "Microsoft.Component.VC.Runtime.UCRTSDK", `
+            "--passive", `
+            "--wait" `
+            -Wait -PassThru
+        if ($VSInstall.ExitCode -eq 0) {
+            Write-Host "VS build tools installation completed." -ForegroundColor Green
+        }
+        else {
+            Write-Host "VS build tools installation failed." -ForegroundColor Red
+            Write-Host "Exit Code: $VSInstall.ExitCode" -ForegroundColor DarkYellow
+            Write-Host "Go here and check the meaning of the error code:"
+            Write-Host "https://learn.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022#error-codes"
+        }
+        Write-Host "Rustup initing..."
+        & $PSScriptRoot\rustup-init.exe -y --default-host x86_64-pc-windows-msvc
+
+        return
+    }
+    "uninstall" {
+          Write-Host "VS Build Tools uninstalling..."
+        $VSInstall = Start-Process -FilePath $PSScriptRoot\vs_buildtools.exe -ArgumentList `
+            "uninstall", `
+            "--all", `
+            "--force", `
+            "--passive", `
+            "--wait" `
+            -Wait -PassThru
+        if ($VSInstall.ExitCode -eq 0) {
+            Write-Host "VS build tools uninstallation completed."
+        }
+        else {
+            Write-Host "VS build tools uninstall failed." -ForegroundColor Red
+            Write-Host "Exit Code: $VSInstall.ExitCode" -ForegroundColor DarkYellow
+            Write-Host "Go here and check the meaning of the error code:"
+            Write-Host "https://learn.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=vs-2022#error-codes"
+        }
+    }
 }
-else {
-    Write-Host "VS build tools installation failed, please check and try to uninstall VS installer manually."
-    Write-Host "Then you can install it with :"
-    Write-Host ".\vs_buildtoos.exe --installPath $env:ProgramFiles\Microsoft Visual Studio --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -add Microsoft.Component.VC.Runtime.UCRTSDK --passive"
-}
 
-# This will install the Visual Studio package manager then open up the GUI installer. You can click straight on install. All the necessary components are already selected.
-
-# Wait for that to finish then run this installer. Alternatively, see Manually Install Only the Libs.
-
-Invoke-WebRequest https://github.com/ChrisDenton/minwinsdk/releases/download/0.0.1/minwinsdk.exe  -OutFile minwinsdk.exe
-.\minwinsdk
-# If all goes well you should finally be able to install rustup
-
-Invoke-WebRequest https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe -OutFile rustup-init.exe
-.\rustup-init -y --default-host x86_64-pc-windows-msvc
+Remove-Item $PSScriptRoot\vs_buildtools.exe
+Remove-Item $PSScriptRoot\rustup-init.exe
