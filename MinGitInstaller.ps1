@@ -15,7 +15,7 @@ function Expand-Git-Crs {
     $LatestReleaseContent = Invoke-WebRequest https://github.com/git-for-windows/git/releases |
     Select-Object -ExpandProperty Content
     $LatestReleaseContent -match `
-        "/git-for-windows/git/releases/download/v.*.windows.1/MinGit-.*-busybox-64-bit.zip"
+        "/git-for-windows/git/releases/download/v.*.windows.*/MinGit-.*-busybox-64-bit.zip"
     Write-Host "Download MinGit-busybox-64bit.zip."
     Invoke-WebRequest ("https://github.com" + $Matches[0]) -OutFile $PSScriptRoot\Git.zip
 
