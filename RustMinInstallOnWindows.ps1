@@ -2,7 +2,6 @@
 # 作者：Curious
 
 
-. $PSScriptRoot\EnvPathManager.ps1
 # 在最小限度内安装Visual Studio构建工具
 $VSVersion = 17
 Write-Host "Downloading vs_buildtools and rustup-init..."
