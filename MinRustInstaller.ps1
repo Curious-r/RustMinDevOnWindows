@@ -94,7 +94,7 @@ switch ($args) {
     "install" {
         # 在最小限度内安装Visual Studio构建工具
         $VSVersion = 17
-        $SDKVersion = 22621
+        $SDKVersion = 26100
         Write-Host "Downloading vs_buildtools and rustup-init..."
         Invoke-WebRequest https://aka.ms/vs/$VSVersion/release/vs_buildtools.exe -OutFile $PSScriptRoot\vs_buildtools.exe
         Invoke-WebRequest https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe -OutFile $PSScriptRoot\rustup-init.exe
